@@ -1,0 +1,14 @@
+#!/usr/bin/python3
+
+import subprocess
+import re
+
+files = subprocess.check_output("find ../ -name '*.py'; exit 0", shell=True).decode("utf-8") 
+files = files.split('\n')
+for file in files:
+    output_message = subprocess.check_output(f"pylint {file}; exit 0", shell=True).decode("utf-8").split('\n')
+    if output_message[0]:
+        score = re.findall('\d*\.?\d+', output_message[-3])[0]
+        if float(score) < 9:
+            print(file, 'has the score less than 9')
+            exit(1)
